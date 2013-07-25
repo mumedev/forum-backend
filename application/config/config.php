@@ -15,7 +15,7 @@
 |
 */
 //$config['base_url']	= 'http://soundsuggest.host-ed.me/forum/';
-$config['base_url']	= 'http://localhost/';
+$config['base_url']	= 'http://localhost/forum-backend/';
 
 /*
 |--------------------------------------------------------------------------
