@@ -19,6 +19,20 @@ $config['base_url']	= 'http://localhost/forum-backend/';
 
 /*
 |--------------------------------------------------------------------------
+| Server Root URL
+|--------------------------------------------------------------------------
+| 
+| Additional config setting. Can be used to append attachments to
+| e-mails. To use:
+| 
+|   $file = $this->config->item('server_root') . '/some_folder/somefile.ext';
+|   $this->email->attach($file);
+| 
+*/
+$config['server_root'] = $_SERVER['DOCUMENT_ROOT'];
+
+/*
+|--------------------------------------------------------------------------
 | Index File
 |--------------------------------------------------------------------------
 |

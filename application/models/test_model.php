@@ -34,6 +34,21 @@ class Test_model extends CI_Model {
             return array();
         }
     }
+    
+    function create($data) {
+        $this->db->insert('test', $data);
+        return;
+    }
+    
+    function update($data) {
+        $this->db->where('name', 'Persona 1');
+        $this->db->update('test', $data);
+    }
+    
+    function delete() {
+        $this->db->where('name', 'Persona 1');
+        $this->db->delete('test');
+    }
 }
 
 ?>
