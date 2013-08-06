@@ -1,30 +1,30 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-/**
- * The User_model class provides methods for reading and writing
- * from and to the database respectively.
- *
- * @author Joris Schelfaut
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
-class User_model extends CI_Model {
+
+/**
+ * Description of skill_model
+ *
+ * @author JORIS
+ */
+class Skill_model extends CI_Model {
     
     /**
      * Sets variables at object initialization.
-     * E.g.
-     *      $params = array('type' => 'large', 'color' => 'red');
-     *      $this->load->library('Someclass', $params);
-     * Source:
-     * http://ellislab.com/codeigniter/user-guide/general/creating_libraries.html
      */
     function __construct() {
         parent::__construct();
     }
     
     /**
-     * Get all records in the user table.
+     * Get all records in the skill table.
      * @return Array
      */
     function select_all() {
-        $query = $this->db->get('user');
+        $query = $this->db->get('skill');
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 $data[] = $row;
@@ -36,14 +36,13 @@ class User_model extends CI_Model {
     }
     
     /**
-     * Get the user with id equal to the given id.
-     * @param type $id
-     * @return type
+     * Get the skill with id equal to the given id.
+     * @param int $id
+     * @return Array
      */
     function select($id) {
         $this->db->where('id', $id);
-        //$this->db->select('name, date_joined, password');
-        $query = $this->db->get('user');
+        $query = $this->db->get('skill');
         if ($query->num_rows() > 0)
             return $query->result();
         else
@@ -51,35 +50,35 @@ class User_model extends CI_Model {
     }
     
     /**
-     * Insert a new record into the user table.
+     * Insert a new record into the skill table.
      * @param int $data
      */
     function insert($data) {
-        $this->db->insert('user', $data);
+        $this->db->insert('skill', $data);
         return;
     }
     
     /**
-     * Update a record with given id in the user table.
+     * Update a record with given id in the skill table.
      * @param int   $id
      * @param array $data
      */
     function update($id, $data) {
         $this->db->where('id', $id);
-        $this->db->update('user', $data);
+        $this->db->update('skill', $data);
         return;
     }
     
     /**
-     * Delete a record in the user table with given id.
+     * Delete a record in the skill table with given id.
      * @param type $id
      */
     function delete($id) {
-        //$this->db->where('id', $this->uri->segment(3));
         $this->db->where('id', $id);
-        $this->db->delete('user');
+        $this->db->delete('skill');
         return;
     }
+    
 }
 
 ?>

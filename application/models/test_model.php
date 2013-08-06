@@ -1,4 +1,4 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * <p>
  * Test_model is a model class to do some quick tests with the framework,
