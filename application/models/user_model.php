@@ -55,8 +55,7 @@ class User_model extends CI_Model {
      * @param int $data
      */
     function insert($data) {
-        $this->db->insert('user', $data);
-        return;
+        return $this->db->insert('user', $data);
     }
     
     /**
@@ -66,8 +65,7 @@ class User_model extends CI_Model {
      */
     function update($id, $data) {
         $this->db->where('id', $id);
-        $this->db->update('user', $data);
-        return;
+        return $this->db->update('user', $data);
     }
     
     /**
@@ -77,9 +75,16 @@ class User_model extends CI_Model {
     function delete($id) {
         //$this->db->where('id', $this->uri->segment(3));
         $this->db->where('id', $id);
-        $this->db->delete('user');
-        return;
+        return $this->db->delete('user');
     }
+    
+    function validate_login() {
+        $this->db->where('username', $this->input->post('username'));
+        $this->db->where('password', md5($this->input->post('password')));
+        $query = $this->db->get('user');
+        return ($query->num_rows() == 1);
+    }
+    
 }
 
 ?>
