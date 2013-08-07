@@ -17,7 +17,7 @@ class Login_controller extends CI_Controller {
         // This key will be accessible through a variable in the view, i.e.
         // $main_content
         $data['main_content'] = 'login_form';
-        $this->load->view('includes/template', $data);
+        $this->load->view('templates/default', $data);
     }
     
     /**
@@ -47,7 +47,7 @@ class Login_controller extends CI_Controller {
      */
     function signup() {
         $data['main_content'] = 'signup_form';
-        $this->load->view('includes/template', $data);
+        $this->load->view('templates/default', $data);
     }
     
     /**
@@ -74,7 +74,7 @@ class Login_controller extends CI_Controller {
             
             if ($this->user_model->insert($user_data)) {
                 $data['main_content'] = 'signup_success';
-                $this->load->view('includes/template', $data);
+                $this->load->view('templates/default', $data);
             } else {
                 $this->signup();
             }

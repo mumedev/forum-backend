@@ -95,6 +95,26 @@ class Test_controller extends CI_Controller {
     function delete_test() {
         
     }
+    
+    /**
+     * Area only accessible after login.
+     */
+    function member() {
+        $this->_is_logged_in();
+        $this->load->view('home');
+    }
+    
+    function _is_logged_in() {
+        $this->load->library('session');
+        $logged_in = $this->session->user_data('is_logged_in');
+        
+        if (!isset($logged_in) || $logged_in != true) {
+            // show error
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
 
 ?>

@@ -1,0 +1,29 @@
+/* 
+    Document   : default
+    Created on : 7-aug-2013, 15:04:45
+    Author     : JORIS
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+td {
+    padding-right: 10px;
+}
+
+tbody .resource_column {
+    font-weight: bold;
+}
+
+.resource_header td {
+    border-bottom: 1px solid black;
+}
+
+thead {
+    font-weight: bolder;
+    font-size: 120%;
+}
+
