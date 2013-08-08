@@ -27,6 +27,14 @@ class Login_controller extends CI_Controller {
     function validate_credentials() {
         $this->load->model('user_model');
         $query = $this->user_model->validate_credentials();
+        /*
+        function validate_login() {
+            $this->db->where('username', $this->input->post('username'));
+            $this->db->where('password', md5($this->input->post('password')));
+            $query = $this->db->get('user');
+            return ($query->num_rows() == 1);
+        }
+         */
         if ($query) {
             $data = array(
                 'username' => $this->input->post('username'),

@@ -40,8 +40,9 @@ class User_model extends CI_Model {
      * @param type $id
      * @return type
      */
-    function select($id) {
-        $this->db->where('id', $id);
+    function select($id, $username) {
+        if ($id) $this->db->where('id', $id);
+        if ($username) $this->db->where('username', $username);
         //$this->db->select('name, date_joined, password');
         $query = $this->db->get('user');
         if ($query->num_rows() > 0)
@@ -78,13 +79,54 @@ class User_model extends CI_Model {
         return $this->db->delete('user');
     }
     
-    function validate_login() {
-        $this->db->where('username', $this->input->post('username'));
-        $this->db->where('password', md5($this->input->post('password')));
+    
+    
+    
+    function validate_login($id, $username, $password) {
+        if (! $username && ! $id) return false;
+        if ($username)  $this->db->where('username', $username);
+        if ($id)        $this->db->where('id', $id);
+        $this->db->where('password', md5($password));
         $query = $this->db->get('user');
         return ($query->num_rows() == 1);
     }
     
+    /**
+     * 
+     * @param type $session_id
+     * @param type $user_id
+     * @return boolean
+     */
+    function validate_session($id, $username, $session_id) {
+        if ((! $username && ! $id) || ! $session_id) return false;
+        $this->db->where('id', $id);
+        $this->db->where('session_id', $session_id);
+        $query = $this->db->get('user');
+        if ($query->num_rows() == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    function create_session($id, $username, $password) {
+        if (! $this->validate_login($id, $username, $password)) return;
+        $this->load->helper('string_helper');
+        $data['session_id'] = random_string('alnum', 32);
+        $this->db->where('id', $id);
+        if ($this->db->update('user', $data))
+            return $data['session_id'];
+        else
+            return;
+    }
+    
+    function delete_session($id, $username, $session_id) {
+        if (!$this->validate_session($id, $username, $session_id)) return false;
+        $this->db->where('id', $id);
+        $this->db->where('session_id', $session_id);
+        $data['session_id'] = NULL;
+        return $this->db->update('user', $data);
+    }
 }
 
 ?>
