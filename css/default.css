@@ -18,8 +18,16 @@ tbody .resource_column {
     font-weight: bold;
 }
 
+td {
+    border-bottom: 1px solid #ccc;
+}
+
 .resource_header td {
-    border-bottom: 1px solid black;
+    border-bottom: 1px black dotted;
+}
+
+thead td {
+    border-bottom: 5px black solid;
 }
 
 thead {

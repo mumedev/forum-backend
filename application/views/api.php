@@ -26,7 +26,13 @@
         <tr>
             <td class="resource_column"></td>
             <td class="method_column">getinfo</td>
-            <td class="parameter_column"></td>
+            <td class="parameter_column">
+                <ul>
+                    <li>id (*)</li>
+                    <li>username (*)</li>
+                </ul>
+                At least one of (*) is required.
+            </td>
             <td class="result_column"></td>
         </tr>
         <tr>
@@ -173,6 +179,29 @@
         <tr>
             <td class="resource_column"></td>
             <td class="method_column">create</td>
+            <td class="parameter_column"></td>
+            <td class="result_column"></td>
+        </tr>
+        <!--
+            ********************************************************************
+            AUTHENTICATION
+            ********************************************************************
+        -->
+        <tr class="resource_header">
+            <td class="resource_column">AUTHENTICATION</td>
+            <td class="method_column"></td>
+            <td class="parameter_column"></td>
+            <td class="result_column"></td>
+        </tr>
+        <tr>
+            <td class="resource_column"></td>
+            <td class="method_column">startsession</td>
+            <td class="parameter_column"></td>
+            <td class="result_column"></td>
+        </tr>
+        <tr>
+            <td class="resource_column"></td>
+            <td class="method_column">endsession</td>
             <td class="parameter_column"></td>
             <td class="result_column"></td>
         </tr>
