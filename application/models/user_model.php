@@ -56,6 +56,12 @@ class User_model extends CI_Model {
      * @param int $data
      */
     function insert($data) {
+        
+        // TODO : string length, ... other checks ...
+        $data['password'] = md5(trim($data['password']));
+        
+        if (! $data['password'] || ! $data['username']) return false;
+        
         return $this->db->insert('user', $data);
     }
     
@@ -74,14 +80,17 @@ class User_model extends CI_Model {
      * @param type $id
      */
     function delete($id) {
-        //$this->db->where('id', $this->uri->segment(3));
         $this->db->where('id', $id);
         return $this->db->delete('user');
     }
     
-    
-    
-    
+    /**
+     * 
+     * @param type $id
+     * @param type $username
+     * @param type $password
+     * @return boolean
+     */
     function validate_login($id, $username, $password) {
         if (! $username && ! $id) return false;
         if ($username)  $this->db->where('username', $username);
@@ -93,8 +102,9 @@ class User_model extends CI_Model {
     
     /**
      * 
+     * @param type $id
+     * @param type $username
      * @param type $session_id
-     * @param type $user_id
      * @return boolean
      */
     function validate_session($id, $username, $session_id) {
@@ -109,6 +119,13 @@ class User_model extends CI_Model {
         }
     }
     
+    /**
+     * 
+     * @param type $id
+     * @param type $username
+     * @param type $password
+     * @return type
+     */
     function create_session($id, $username, $password) {
         if (! $this->validate_login($id, $username, $password)) return;
         $this->load->helper('string_helper');
@@ -120,6 +137,13 @@ class User_model extends CI_Model {
             return;
     }
     
+    /**
+     * 
+     * @param type $id
+     * @param type $username
+     * @param type $session_id
+     * @return boolean
+     */
     function delete_session($id, $username, $session_id) {
         if (!$this->validate_session($id, $username, $session_id)) return false;
         $this->db->where('id', $id);
@@ -127,6 +151,42 @@ class User_model extends CI_Model {
         $data['session_id'] = NULL;
         return $this->db->update('user', $data);
     }
+    
+    /**
+     * 
+     * @param type $id
+     * @return type
+     */
+    function getskills($id) {
+        $query = $this->db->query('SELECT s.id, s.name FROM skill s, user_skill us WHERE us.user_id = ' . $id . ' AND us.skill_id = s.id');
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        } else {
+            return array();
+        }
+    }
+    
+    /**
+     * 
+     * @param type $id
+     * @return type
+     */
+    function getanswers($id) {
+        $query = $this->db->query('SELECT a.id, a.date_posted, a.text, a.question_id, a.author '
+                . ' FROM answer a WHERE a.author = ' . $id);
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        } else {
+            return array();
+        }
+    }
+    
 }
 
 ?>

@@ -74,8 +74,8 @@ class Answer_model extends CI_Model {
         return;
     }
     
-    function getquestion() {
-        $query = $this->db->query('SELECT q.id, q.author, q.date_posted, q.text FROM question q, answer a WHERE a.id = 1 AND a.question_id = q.id');
+    function getquestion($id) {
+        $query = $this->db->query('SELECT q.id, q.author, q.date_posted, q.text FROM question q, answer a WHERE a.id = ' . $id . ' AND a.question_id = q.id');
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
                 $data[] = $row;

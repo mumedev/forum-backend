@@ -46,6 +46,7 @@ class Test_model extends CI_Model {
     }
     
     function delete() {
+        //$this->db->where('id', $this->uri->segment(3));
         $this->db->where('name', 'Persona 1');
         $this->db->delete('test');
     }

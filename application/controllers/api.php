@@ -39,8 +39,8 @@ class Api extends REST_Controller {
      * Default page loaded when the controller is loaded.
      */
     function index() {
-        $data['page'] = 'api';
-        $this->load->view('templates/default', $data);
+        $params['page'] = 'api';
+        $this->load->view('templates/default', $params);
     }
     
     ////////////////////////////////////////////////////////////////////////////
@@ -83,8 +83,10 @@ class Api extends REST_Controller {
             return;
         }
         
-        if ($this->post('name')) $data['name'] = $this->post('name');
+        if ($this->post('username')) $data['username'] = $this->post('username');
         if ($this->post('password')) $data['password'] = $this->post('password');
+        if ($this->post('emailaddress')) $data['email_address'] = $this->post('emailaddress');
+        if ($this->post('homepage')) $data['homepage'] = $this->post('homepage');
         
         $this->load->model('user_model');
         $result = $this->user_model->update($id, $data);
@@ -112,21 +114,67 @@ class Api extends REST_Controller {
     }
     
     function user_register_post() {
+        $data = array();
         
+        if ($this->post('username')) $data['username'] = $this->post('username');
+        if ($this->post('password')) $data['password'] = $this->post('password');
+        if ($this->post('emailaddress')) $data['email_address'] = $this->post('emailaddress');
+        if ($this->post('homepage')) $data['homepage'] = $this->post('homepage');
+        
+        $this->load->model('user_model');
+        $result = $this->user_model->insert($data);
+
+        if ($result === FALSE) {
+            $this->response(array('status' => 'failed'));
+        } else {
+            $this->response(array('status' => 'success'));
+        }
     }
     
     function user_delete_post() {
-        if (! $this->_validate_session($this->post('id'), NULL, $this->post('session'))) {
+        $id = $this->get('id');
+        $username = $this->get('username');
+        if (!$id && !$username) {
+            $this->response(NULL, 400);
+        }
+        if (! $this->_validate_session($id, NULL, $this->post('session'))) {
             $this->response(array('status' => 'failed'));
             return;
+        }
+        $this->load->model('user_model');
+        $result = $this->user_model->delete($id, $username);
+        
+        if ($result === FALSE) {
+            $this->response(array('status' => 'failed'));
+        } else {
+            $this->response(array('status' => 'success'));
         }
     }
     
     function user_search_get() {}
     
-    function user_getskills_get() {}
+    function user_getskills_get() {
+        $id = $this->post('id');
+        $this->load->model('user_model');
+        $skills = $this->user_model->getskills($id);
+        if ($skills) {
+            $this->response($skills, 200);
+        } else {
+            $this->response(NULL, 404);
+        }
+    }
     
-    function user_getanswers_get() {}
+    function user_getanswers_get() {
+        $id = $this->post('id');
+        $this->load->model('user_model');
+        $answers = $this->user_model->getanswers($id);
+        if ($answers) {
+            $this->response($answers, 200);
+        } else {
+            $this->response(NULL, 404);
+        }
+        
+    }
     
     
     ////////////////////////////////////////////////////////////////////////////
@@ -144,7 +192,9 @@ class Api extends REST_Controller {
         }
     }
     
-    function skill_getquestions_get() {}
+    function skill_getquestions_get() {
+        
+    }
     
     
     ////////////////////////////////////////////////////////////////////////////
@@ -242,7 +292,7 @@ class Api extends REST_Controller {
      */
     function _validate_session($id, $username, $session_id) {
         $this->load->model('user_model');
-        return $this->user_model->validate_session($session_id, id);
+        return $this->user_model->validate_session($id, $username, $session_id);
     }
     
 }
