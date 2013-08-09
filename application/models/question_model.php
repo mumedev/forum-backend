@@ -76,6 +76,39 @@ class Question_model extends CI_Model {
         return;
     }
     
+    /**
+     * @param type $id
+     * @return type
+     */
+    function getanswers($id) {
+        $query = $this->db->query('SELECT a.id, a.date_posted, a.text, a.question_id, a.author '
+                . ' FROM answer a WHERE a.question_id = ' . $id);
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        } else {
+            return array();
+        }
+    }
+    
+    /**
+     * 
+     * @param type $id
+     * @return type
+     */
+    function getskills($id) {
+        $query = $this->db->query('SELECT s.id, s.name FROM skill s, question_skill qs WHERE qs.question_id = ' . $id . ' AND qs.skill_id = s.id');
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        } else {
+            return array();
+        }
+    }
 }
 
 ?>

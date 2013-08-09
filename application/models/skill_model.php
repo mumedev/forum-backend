@@ -8,7 +8,7 @@
 /**
  * Description of skill_model
  *
- * @author JORIS
+ * @author Joris Schelfaut
  */
 class Skill_model extends CI_Model {
     
@@ -79,6 +79,45 @@ class Skill_model extends CI_Model {
         return;
     }
     
+    /**
+     * 
+     * @param type $id
+     * @param type $name
+     * @return type
+     */
+    function getquestions($id, $name) {
+        $query = $this->db->query('SELECT q.id, q.date_posted, q.text, q.author '
+                . ' FROM question q, question_skill qs WHERE qs.skill_id = ' . $id
+                . ' AND q.id = qs.question_id');
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        } else {
+            return array();
+        }
+    }
+    
+    /**
+     * 
+     * @param type $id
+     * @param type $name
+     * @return type
+     */
+    function getusers($id, $name) {
+        $query = $this->db->query('SELECT u.id, u.date_joined, u.username, u.homepage '
+                . ' FROM user u, user_skill us WHERE us.skill_id = ' . $id
+                . ' AND u.id = us.user_id');
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        } else {
+            return array();
+        }
+    }
 }
 
 ?>

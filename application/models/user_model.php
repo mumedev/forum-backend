@@ -155,9 +155,10 @@ class User_model extends CI_Model {
     /**
      * 
      * @param type $id
+     * @param type $username
      * @return type
      */
-    function getskills($id) {
+    function getskills($id, $username) {
         $query = $this->db->query('SELECT s.id, s.name FROM skill s, user_skill us WHERE us.user_id = ' . $id . ' AND us.skill_id = s.id');
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
@@ -172,9 +173,10 @@ class User_model extends CI_Model {
     /**
      * 
      * @param type $id
+     * @param type $username
      * @return type
      */
-    function getanswers($id) {
+    function getanswers($id, $username) {
         $query = $this->db->query('SELECT a.id, a.date_posted, a.text, a.question_id, a.author '
                 . ' FROM answer a WHERE a.author = ' . $id);
         if ($query->num_rows() > 0) {
@@ -187,6 +189,24 @@ class User_model extends CI_Model {
         }
     }
     
+    /**
+     * 
+     * @param type $id
+     * @param type $username
+     * @return type
+     */
+    function getquestions($id, $username) {
+        $query = $this->db->query('SELECT q.id, q.date_posted, q.text, q.author '
+                . ' FROM question q WHERE q.author = ' . $id);
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        } else {
+            return array();
+        }
+    }
 }
 
 ?>

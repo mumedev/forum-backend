@@ -57,12 +57,12 @@ class Api extends REST_Controller {
      * At least one of both is required.
      */
     function user_getinfo_get() {
-        $this->load->model('user_model');
         $id = $this->get('id');
         $username = $this->get('username');
         if (!$id && !$username) {
             $this->response(NULL, 400);
         }
+        $this->load->model('user_model');
         $user = $this->user_model->select($id, $username);
         if ($user) {
             $this->response($user, 200);
@@ -75,14 +75,17 @@ class Api extends REST_Controller {
      * Requires authentication.
      */
     function user_updateinfo_post() {
-        $data = array();
         $id = $this->post('id');
-        
-        if (! $this->_validate_session($this->post('id'), NULL, $this->post('session'))) {
+        $username = $this->post('username');
+        if (!$id && !$username) {
+            $this->response(NULL, 400);
+            return;
+        }
+        if (! $this->_validate_session($id, $username, $this->post('session'))) {
             $this->response(array('status' => 'failed'));
             return;
         }
-        
+        $data = array();
         if ($this->post('username')) $data['username'] = $this->post('username');
         if ($this->post('password')) $data['password'] = $this->post('password');
         if ($this->post('emailaddress')) $data['email_address'] = $this->post('emailaddress');
@@ -95,21 +98,6 @@ class Api extends REST_Controller {
             $this->response(array('status' => 'failed'));
         } else {
             $this->response(array('status' => 'success'));
-        }
-    }
-    
-    function user_getquestions_get() {
-        $this->load->model('user_model');
-        $id = $this->get('id');
-        $username = $this->get('username');
-        if (!$id && !$username) {
-            $this->response(NULL, 400);
-        }
-        $user = $this->user_model->select($id, $username);
-        if ($user) {
-            $this->response($user, 200);
-        } else {
-            $this->response(NULL, 404);
         }
     }
     
@@ -131,13 +119,18 @@ class Api extends REST_Controller {
         }
     }
     
+    /**
+     * Delete a given user.
+     * Requires authentication.
+     */
     function user_delete_post() {
-        $id = $this->get('id');
-        $username = $this->get('username');
+        $id = $this->post('id');
+        $username = $this->post('username');
         if (!$id && !$username) {
             $this->response(NULL, 400);
+            return;
         }
-        if (! $this->_validate_session($id, NULL, $this->post('session'))) {
+        if (! $this->_validate_session($id, $username, $this->post('session'))) {
             $this->response(array('status' => 'failed'));
             return;
         }
@@ -153,10 +146,18 @@ class Api extends REST_Controller {
     
     function user_search_get() {}
     
+    /**
+     * Get the skills for a given user.
+     */
     function user_getskills_get() {
-        $id = $this->post('id');
+        $id = $this->get('id');
+        $username = $this->get('username');
+        if (!$id && !$username) {
+            $this->response(NULL, 400);
+            return;
+        }
         $this->load->model('user_model');
-        $skills = $this->user_model->getskills($id);
+        $skills = $this->user_model->getskills($id, $username);
         if ($skills) {
             $this->response($skills, 200);
         } else {
@@ -164,10 +165,18 @@ class Api extends REST_Controller {
         }
     }
     
+    /**
+     * Get the answers given by a certain user.
+     */
     function user_getanswers_get() {
-        $id = $this->post('id');
+        $id = $this->get('id');
+        $username = $this->get('username');
+        if (!$id && !$username) {
+            $this->response(NULL, 400);
+            return;
+        }
         $this->load->model('user_model');
-        $answers = $this->user_model->getanswers($id);
+        $answers = $this->user_model->getanswers($id, $username);
         if ($answers) {
             $this->response($answers, 200);
         } else {
@@ -176,6 +185,24 @@ class Api extends REST_Controller {
         
     }
     
+    /**
+     * Retrieve the question posed by a user.
+     */
+    function user_getquestions_get() {
+        $id = $this->get('id');
+        $username = $this->get('username');
+        if (!$id && !$username) {
+            $this->response(NULL, 400);
+            return;
+        }
+        $this->load->model('user_model');
+        $questions = $this->user_model->getquestions($id, $username);
+        if ($questions) {
+            $this->response($questions, 200);
+        } else {
+            $this->response(NULL, 404);
+        }
+    }
     
     ////////////////////////////////////////////////////////////////////////////
     //
@@ -185,15 +212,55 @@ class Api extends REST_Controller {
     
     function skill_search_get() {}
     
+    /**
+     * Create a new skill.
+     */
     function skill_create_post() {
         if (! $this->_validate_session($this->post('id'), NULL, $this->post('session'))) {
             $this->response(array('status' => 'failed'));
             return;
         }
+        $this->load->model('skill_model');
+        $data['name'] = $this->post('name');
+        $this->skill_model->insert($data);
     }
     
+    /**
+     * Get the questions related to a given skill.
+     */
     function skill_getquestions_get() {
-        
+        $id = $this->get('id');
+        $name = $this->get('name');
+        if (!$id && !$name) {
+            $this->response(NULL, 400);
+            return;
+        }
+        $this->load->model('skill_model');
+        $questions = $this->skill_model->getquestions($id, $name);
+        if ($questions) {
+            $this->response($questions, 200);
+        } else {
+            $this->response(NULL, 404);
+        }
+    }
+    
+    /**
+     * Get the users that have a given skill.
+     */
+    function skill_getusers_get() {
+        $id = $this->get('id');
+        $name = $this->get('name');
+        if (!$id && !$name) {
+            $this->response(NULL, 400);
+            return;
+        }
+        $this->load->model('skill_model');
+        $users = $this->skill_model->getusers($id, $name);
+        if ($users) {
+            $this->response($users, 200);
+        } else {
+            $this->response(NULL, 404);
+        }
     }
     
     
@@ -205,21 +272,72 @@ class Api extends REST_Controller {
     
     function question_search_get() {}
     
-    function question_getanswers_get() {}
+    function question_getanswers_get() {
+        $id = $this->get('id');
+        if (!$id) {
+            $this->response(NULL, 400);
+            return;
+        }
+        $this->load->model('question_model');
+        $users = $this->question_model->getanswers($id);
+        if ($users) {
+            $this->response($users, 200);
+        } else {
+            $this->response(NULL, 404);
+        }
+    }
     
-    function question_getskills_get() {}
+    function question_getskills_get() {
+        $id = $this->get('id');
+        if (!$id) {
+            $this->response(NULL, 400);
+            return;
+        }
+        $this->load->model('question_model');
+        $skills = $this->question_model->getskills($id);
+        if ($skills) {
+            $this->response($skills, 200);
+        } else {
+            $this->response(NULL, 404);
+        }    
+    }
     
     function question_create_post() {
-        if (! $this->_validate_session($this->post('id'), NULL, $this->post('session'))) {
+        $id = $this->post('id');
+        $username = $this->post('username');
+        if (!$id && !$username) {
+            $this->response(NULL, 400);
+            return;
+        }
+        if (! $this->_validate_session($id, $username, $this->post('session'))) {
             $this->response(array('status' => 'failed'));
             return;
         }
     }
     
-    function question_getinfo_get() {}
+    function question_getinfo_get() {
+        $id = $this->get('id');
+        if (!$id) {
+            $this->response(NULL, 400);
+            return;
+        }
+        $this->load->model('question_model');
+        $question = $this->question_model->select($id);
+        if ($question) {
+            $this->response($question, 200);
+        } else {
+            $this->response(NULL, 404);
+        }
+    }
     
     function question_delete_post() {
-        if (! $this->_validate_session($this->post('id'), NULL, $this->post('session'))) {
+        $id = $this->post('id');
+        $username = $this->post('username');
+        if (!$id && !$username) {
+            $this->response(NULL, 400);
+            return;
+        }
+        if (! $this->_validate_session($id, $username, $this->post('session'))) {
             $this->response(array('status' => 'failed'));
             return;
         }
@@ -232,15 +350,17 @@ class Api extends REST_Controller {
     //
     ////////////////////////////////////////////////////////////////////////////
     
-    function answer_search_get() {
-        
-        $this->load->model('answer_model');
-        //$this->answer_model->();
-        
-    }
+    function answer_search_get() {}
     
+    /**
+     * Get the question for the given answer.
+     */
     function answer_getquestion_get() {
-        $id = $this->post('id');
+        $id = $this->get('id');
+        if (!$id) {
+            $this->response(NULL, 400);
+            return;
+        }
         $this->load->model('answer_model');
         $question = $this->answer_model->getquestion($id);
         if ($question) {
@@ -250,8 +370,17 @@ class Api extends REST_Controller {
         }
     }
     
+    /**
+     * Create an answer.
+     */
     function answer_create_post() {
-        if (! $this->_validate_session($this->post('id'), NULL, $this->post('session'))) {
+        $id = $this->post('id');
+        $username = $this->post('username');
+        if (!$id && !$username) {
+            $this->response(NULL, 400);
+            return;
+        }
+        if (! $this->_validate_session($id, $username, $this->post('session'))) {
             $this->response(array('status' => 'failed'));
             return;
         }
