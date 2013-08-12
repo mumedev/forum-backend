@@ -123,7 +123,7 @@ class Api extends REST_Controller {
      * Delete a given user.
      * Requires authentication.
      */
-    function user_delete_post() {
+    function user_unregister_post() {
         $id = $this->post('id');
         $username = $this->post('username');
         if (!$id && !$username) {
