@@ -45,6 +45,44 @@ class Api extends REST_Controller {
     
     ////////////////////////////////////////////////////////////////////////////
     //
+    //  authentication methods
+    //
+    ////////////////////////////////////////////////////////////////////////////
+    
+    /**
+     * Start a new session for the given user.
+     */
+    function authentication_startsession_get() {
+        $this->load->model('user_model');
+        $key = $this->user_model->create_session($this->get('id'), $this->get('username'), $this->get('password'));
+        if ($key) {
+            $this->response($key, 200);
+        } else {
+            $this->response(NULL, 404);
+        }
+    }
+    
+    /**
+     * End the session for the given user.
+     */
+    function authentication_endsession_get() {
+        $this->load->model('user_model');
+        $this->user_model->delete_session($this->get('id'), $this->get('username'), $this->get('session'));
+    }
+    
+    /**
+     * Verifies if the given $session_id corresponds to the stored session
+     * id for the user.
+     * @param   String $session_id
+     * @return  boolean
+     */
+    function _validate_session($id, $username, $session_id) {
+        $this->load->model('user_model');
+        return $this->user_model->validate_session($id, $username, $session_id);
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////
+    //
     //  user methods
     //
     ////////////////////////////////////////////////////////////////////////////
@@ -385,45 +423,6 @@ class Api extends REST_Controller {
             return;
         }
     }
-    
-    ////////////////////////////////////////////////////////////////////////////
-    //
-    //  authentication methods
-    //
-    ////////////////////////////////////////////////////////////////////////////
-    
-    /**
-     * Start a new session for the given user.
-     */
-    function authentication_startsession_get() {
-        $this->load->model('user_model');
-        $key = $this->user_model->create_session($this->get('id'), $this->get('username'), $this->get('password'));
-        if ($key) {
-            $this->response($key, 200);
-        } else {
-            $this->response(NULL, 404);
-        }
-    }
-    
-    /**
-     * End the session for the given user.
-     */
-    function authentication_endsession_get() {
-        $this->load->model('user_model');
-        $this->user_model->delete_session($this->get('id'), $this->get('username'), $this->get('session'));
-    }
-    
-    /**
-     * Verifies if the given $session_id corresponds to the stored session
-     * id for the user.
-     * @param   String $session_id
-     * @return  boolean
-     */
-    function _validate_session($id, $username, $session_id) {
-        $this->load->model('user_model');
-        return $this->user_model->validate_session($id, $username, $session_id);
-    }
-    
 }
 
 ?>

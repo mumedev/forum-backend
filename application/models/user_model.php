@@ -120,7 +120,7 @@ class User_model extends CI_Model {
     }
     
     /**
-     * 
+     * Create a new session for the given user.
      * @param type $id
      * @param type $username
      * @param type $password
@@ -130,7 +130,8 @@ class User_model extends CI_Model {
         if (! $this->validate_login($id, $username, $password)) return;
         $this->load->helper('string_helper');
         $data['session_id'] = random_string('alnum', 32);
-        $this->db->where('id', $id);
+        if ($id) $this->db->where('id', $id);
+        if ($username) $this->db->where('username', $username);
         if ($this->db->update('user', $data))
             return $data['session_id'];
         else
@@ -138,7 +139,7 @@ class User_model extends CI_Model {
     }
     
     /**
-     * 
+     * Delete the session for the given user.
      * @param type $id
      * @param type $username
      * @param type $session_id
@@ -146,7 +147,8 @@ class User_model extends CI_Model {
      */
     function delete_session($id, $username, $session_id) {
         if (!$this->validate_session($id, $username, $session_id)) return false;
-        $this->db->where('id', $id);
+        if ($id) $this->db->where('id', $id);
+        if ($username) $this->db->where('username', $username);
         $this->db->where('session_id', $session_id);
         $data['session_id'] = NULL;
         return $this->db->update('user', $data);
