@@ -101,15 +101,17 @@ class User_model extends CI_Model {
     }
     
     /**
-     * 
+     * Verify if there is a session for the given user.
      * @param type $id
      * @param type $username
      * @param type $session_id
      * @return boolean
      */
     function validate_session($id, $username, $session_id) {
-        if ((! $username && ! $id) || ! $session_id) return false;
-        $this->db->where('id', $id);
+        if (! $username && ! $id)   return false;
+        if (! $session_id)          return false;
+        if ($id) $this->db->where('id', $id);
+        if ($username) $this->db->where('username', $username);
         $this->db->where('session_id', $session_id);
         $query = $this->db->get('user');
         if ($query->num_rows() == 1) {

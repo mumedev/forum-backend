@@ -67,7 +67,12 @@ class Api extends REST_Controller {
      */
     function authentication_endsession_get() {
         $this->load->model('user_model');
-        $this->user_model->delete_session($this->get('id'), $this->get('username'), $this->get('session'));
+        $result = $this->user_model->delete_session($this->get('id'), $this->get('username'), $this->get('session'));
+        if ($result) {
+            $this->response($result, 200);
+        } else {
+            $this->response(NULL, 404);
+        }
     }
     
     /**
