@@ -20,6 +20,23 @@ class User_model extends CI_Model {
     }
     
     /**
+     * Returns the id of the user with given username.
+     * @param type $username
+     * @return null
+     */
+    function get_id($username) {
+        if ($username) $this->db->where('username', $username);
+        $this->db->select('id');
+        $query = $this->db->get('user');
+        if ($query->num_rows() == 1) {
+            $row = $query->row();
+            return $row->id;
+        }
+        else
+            return null;
+    }
+    
+    /**
      * Get all records in the user table.
      * @return Array
      */
@@ -43,7 +60,6 @@ class User_model extends CI_Model {
     function select($id, $username) {
         if ($id) $this->db->where('id', $id);
         if ($username) $this->db->where('username', $username);
-        //$this->db->select('name, date_joined, password');
         $query = $this->db->get('user');
         if ($query->num_rows() > 0)
             return $query->result();
@@ -163,6 +179,7 @@ class User_model extends CI_Model {
      * @return type
      */
     function getskills($id, $username) {
+        if (! $id) $id = $this->get_id ($username);
         $query = $this->db->query('SELECT s.id, s.name FROM skill s, user_skill us WHERE us.user_id = ' . $id . ' AND us.skill_id = s.id');
         if ($query->num_rows() > 0) {
             foreach ($query->result() as $row) {
@@ -181,6 +198,7 @@ class User_model extends CI_Model {
      * @return type
      */
     function getanswers($id, $username) {
+        if (! $id) $id = $this->get_id ($username);
         $query = $this->db->query('SELECT a.id, a.date_posted, a.text, a.question_id, a.author '
                 . ' FROM answer a WHERE a.author = ' . $id);
         if ($query->num_rows() > 0) {
@@ -200,6 +218,7 @@ class User_model extends CI_Model {
      * @return type
      */
     function getquestions($id, $username) {
+        if (! $id) $id = $this->get_id ($username);
         $query = $this->db->query('SELECT q.id, q.date_posted, q.text, q.author '
                 . ' FROM question q WHERE q.author = ' . $id);
         if ($query->num_rows() > 0) {

@@ -209,6 +209,13 @@ class Api extends REST_Controller {
     }
     
     /**
+     * Get the skills for a given user.
+     */
+    function user_removeskill_post() {
+        
+    }
+    
+    /**
      * Get the answers given by a certain user.
      */
     function user_getanswers_get() {
